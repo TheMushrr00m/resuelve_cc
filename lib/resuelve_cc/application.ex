@@ -1,18 +1,17 @@
 defmodule ResuelveCc.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
+  @moduledoc "OTP Application specification for ResuelveCc"
 
   use Application
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: ResuelveCc.Worker.start_link(arg)
-      # {ResuelveCc.Worker, arg}
+      Plug.Cowboy.child_spec(
+        scheme: :http,
+        plug: ResuelveCc.Endpoint,
+        options: [port: Application.get_env(:resuelve_cc, :port)]
+      )
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ResuelveCc.Supervisor]
     Supervisor.start_link(children, opts)
   end
