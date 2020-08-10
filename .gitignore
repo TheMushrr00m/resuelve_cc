@@ -22,5 +22,6 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 resuelve_cc-*.tar
 
-# Ignore files created by Rubymine
+# Ignore files created by IDEs
 .idea
+.elixir_ls
