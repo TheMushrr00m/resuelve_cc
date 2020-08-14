@@ -10,7 +10,7 @@ defmodule ResuelveCc.V1.Router do
     {status, body} =
       case conn.body_params do
         %{"jugadores" => players, "equipos" => teams} -> {200, process_payroll(players, teams)}
-        _ -> {400, missing_data()}
+        _ -> {422, missing_data()}
       end
 
     conn
