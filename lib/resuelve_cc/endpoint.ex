@@ -1,18 +1,16 @@
 defmodule ResuelveCc.Endpoint do
-  @moduledoc """
-  A Plug responsible for logging request info, parsing request body's as JSON,
-  matching routes, and dispatching responses.
-  """
-
   use Plug.Router
 
-  # Using it for logging request information
+  plug Plug.RequestId
   plug Plug.Logger
+
   plug :match
-  # Using Jason for JSON decoding
+
   plug Plug.Parsers,
-    parsers: [:json], json_decoder: Jason
-  # responsible for dispatching responses
+    parsers: [:json],
+    pass: ["application/json"],
+    json_decoder: Jason
+
   plug :dispatch
 
   # Define a health_checker route for the service
@@ -20,9 +18,12 @@ defmodule ResuelveCc.Endpoint do
     send_resp(conn, 200, "Service running correctly!")
   end
 
-  # A catchall route, 'match' will match no matter the request method,
+  # Forward requests to versioned router(s)
+  forward "/v1", to: ResuelveCc.V1.Router
+
+  # A catchall route, that will match no matter the request method,
   # so a response is always returned, even if there is no route to match.
   match _ do
-    send_resp(conn, 404, "Route not found.")
+    send_resp(conn, 404, "Not found")
   end
 end
